@@ -1,0 +1,23 @@
+frontpoint - read sensor status and record to influx db
+
+* See
+https://github.com/elahd/pyalarmdotcomajax/tree/master/pyalarmdotcomajax
+* Install
+1. clone the git repo
+2. install required gems
+
+#+BEGIN_SRC shell
+bundle install
+#+END_SRC
+* Scan
+#+BEGIN_EXAMPLE
+Usage:
+  frontpoint.rb record-status
+
+Options:
+      [--log], [--no-log]          # log output to ~/.log/.frontpoint.log
+                                   # Default: true
+  -v, [--verbose], [--no-verbose]  # increase verbosity
+
+Record current sensor states to database
+#+END_EXAMPLE
