@@ -86,7 +86,9 @@ class Frontpoint < Thor
 
     cookies = { twoFactorAuthenticationId: credentials[:twoFactorAuthenticationId] }
 
-    response = RestClient::Request.execute(method: :get, url: LOGIN_URL, cookies: cookies)
+    response = with_rescue([RestClient::Exceptions::OpenTimeout], @logger) do |_try|
+      RestClient::Request.execute(method: :get, url: LOGIN_URL, cookies: cookies)
+    end
     body = response.body
     jar = response.cookie_jar
 
@@ -113,22 +115,26 @@ class Frontpoint < Thor
 
     ajax_headers = { Accept: 'application/vnd.api+json',
                      ajaxrequestuniquekey: nil }
-    RestClient::Request.execute(method: :post,
-                                url: LOGIN_POST_URL,
-                                payload: data,
-                                cookies: jar,
-                                max_redirects: 0) do |resp, _req, _res|
-      ajax_headers[:ajaxrequestuniquekey] = resp.cookies['afg']
+    with_rescue([RestClient::Exceptions::OpenTimeout], @logger) do |_try|
+      RestClient::Request.execute(method: :post,
+                                  url: LOGIN_POST_URL,
+                                  payload: data,
+                                  cookies: jar,
+                                  max_redirects: 0) do |resp, _req, _res|
+        ajax_headers[:ajaxrequestuniquekey] = resp.cookies['afg']
+      end
     end
     # pp jar
 
     #
     # Get devices
     #
-    response = RestClient::Request.execute(method: :get,
-                                           url: SENSOR_URL,
-                                           headers: ajax_headers,
-                                           cookies: jar)
+    response = with_rescue([RestClient::Exceptions::OpenTimeout], @logger) do |_try|
+      RestClient::Request.execute(method: :get,
+                                  url: SENSOR_URL,
+                                  headers: ajax_headers,
+                                  cookies: jar)
+    end
     json = JSON.parse response
     # pp json['data']
 
