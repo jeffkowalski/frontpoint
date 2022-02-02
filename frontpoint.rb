@@ -116,7 +116,8 @@ class Frontpoint < Thor
 
     ajax_headers = { Accept: 'application/vnd.api+json',
                      ajaxrequestuniquekey: nil }
-    with_rescue([RestClient::Exceptions::OpenTimeout,
+    with_rescue([Errno::ECONNRESET,
+                 RestClient::Exceptions::OpenTimeout,
                  RestClient::ServiceUnavailable], @logger) do |_try|
       RestClient::Request.execute(method: :post,
                                   url: LOGIN_POST_URL,
@@ -131,7 +132,8 @@ class Frontpoint < Thor
     #
     # Get devices
     #
-    response = with_rescue([RestClient::Exceptions::OpenTimeout,
+    response = with_rescue([Errno::ECONNRESET,
+                            RestClient::Exceptions::OpenTimeout,
                             RestClient::ServiceUnavailable], @logger) do |_try|
       RestClient::Request.execute(method: :get,
                                   url: SENSOR_URL,
