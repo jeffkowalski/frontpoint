@@ -25,6 +25,10 @@ class Frontpoint < RecorderBotBase
     def main
       credentials = load_credentials
 
+      soft_faults = [Errno::ECONNRESET,
+                     RestClient::Exceptions::OpenTimeout,
+                     RestClient::ServiceUnavailable]
+
       influxdb = options[:dry_run] ? nil : InfluxDB::Client.new('frontpoint')
 
       #
@@ -35,8 +39,7 @@ class Frontpoint < RecorderBotBase
 
       cookies = { twoFactorAuthenticationId: credentials[:twoFactorAuthenticationId] }
 
-      response = with_rescue([RestClient::Exceptions::OpenTimeout,
-                              RestClient::ServiceUnavailable], @logger) do |_try|
+      response = with_rescue(soft_faults, @logger) do |_try|
         RestClient::Request.execute(method: :get, url: LOGIN_URL, cookies: cookies)
       end
       body = response.body
@@ -65,9 +68,7 @@ class Frontpoint < RecorderBotBase
 
       ajax_headers = { Accept: 'application/vnd.api+json',
                        ajaxrequestuniquekey: nil }
-      with_rescue([Errno::ECONNRESET,
-                   RestClient::Exceptions::OpenTimeout,
-                   RestClient::ServiceUnavailable], @logger) do |_try|
+      with_rescue(soft_faults, @logger) do |_try|
         RestClient::Request.execute(method: :post,
                                     url: LOGIN_POST_URL,
                                     payload: data,
@@ -81,9 +82,7 @@ class Frontpoint < RecorderBotBase
       #
       # Get devices
       #
-      response = with_rescue([Errno::ECONNRESET,
-                              RestClient::Exceptions::OpenTimeout,
-                              RestClient::ServiceUnavailable], @logger) do |_try|
+      response = with_rescue(soft_faults, @logger) do |_try|
         RestClient::Request.execute(method: :get,
                                     url: SENSOR_URL,
                                     headers: ajax_headers,
