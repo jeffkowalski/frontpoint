@@ -28,6 +28,7 @@ class Frontpoint < RecorderBotBase
       soft_faults = [Errno::ECONNRESET,
                      RestClient::Exceptions::OpenTimeout,
                      RestClient::Exceptions::ReadTimeout,
+                     RestClient::Forbidden,
                      RestClient::ServiceUnavailable]
 
       influxdb = options[:dry_run] ? nil : InfluxDB::Client.new('frontpoint')
