@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default)
 
@@ -9,11 +8,11 @@ Bundler.require(:default)
 # file:///home/jeff/.local/lib/python3.8/site-packages/pyalarmdotcomajax/__init__.py
 
 URL_BASE = 'https://www.alarm.com'
-LOGIN_URL = "#{URL_BASE}/login"
+LOGIN_URL = "#{URL_BASE}/login".freeze
 LOGIN_USERNAME_FIELD = 'ctl00$ContentPlaceHolder1$loginform$txtUserName'
 LOGIN_PASSWORD_FIELD = 'txtPassword'
-LOGIN_POST_URL = "#{URL_BASE}/web/Default.aspx"
-SENSOR_URL = "#{URL_BASE}/web/api/devices/sensors/"
+LOGIN_POST_URL = "#{URL_BASE}/web/Default.aspx".freeze
+SENSOR_URL = "#{URL_BASE}/web/api/devices/sensors/".freeze
 
 VIEWSTATE_FIELD = '__VIEWSTATE'
 VIEWSTATEGENERATOR_FIELD = '__VIEWSTATEGENERATOR'
